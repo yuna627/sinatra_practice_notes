@@ -14,14 +14,24 @@ end
 
 get '/notes/new' do
   @title = 'main'
-  @content = 'main contnt'
   erb :notes_new
 end
 
 post '/notes' do
   @title = 'main'
-  @content = 'main contnt'
-  # リダイレクトしてメモアプリトップにいく
+  File.open('data/notes.json') do |note_file|
+    @data = JSON.load(note_file)
+    @data['last_id'] += 1
+    @data['notes'][@data['last_id'].to_s] = {
+      id: @data['last_id'],
+      title: params[:note_title],
+      body: params[:note_body]
+    }
+  end
+  # 書き込み
+  File.open('data/notes.json', 'w') do |note_file|
+    JSON.dump(@data, note_file)
+  end
   redirect to('/notes')
 end
 
