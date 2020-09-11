@@ -1,12 +1,14 @@
 require 'sinatra'
 require 'sinatra/reloader'
+require 'json'
 
 get '/notes' do
   @title = 'Notes'
-  @content = 'Notes'
-
-  @notes = [{ "id": 1, "title": 'Test1', "body": 'This is test 1!' },
-            { "id": 2, "title": 'Test2', "body": 'This is test 2!' }]
+  File.open('data/notes.json') do |note_file|
+    note = JSON.load(note_file)
+    p note
+    @notes = note['notes']
+  end
   erb :notes
 end
 
