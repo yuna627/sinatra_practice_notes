@@ -57,3 +57,4 @@ build-iPhoneSimulator/
 
 # Logfile
 /sinatra.log
+/data/notes.json
