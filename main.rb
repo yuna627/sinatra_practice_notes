@@ -19,6 +19,7 @@ end
 
 post '/notes' do
   @title = 'main'
+  # ファイルの読み込み
   File.open('data/notes.json') do |note_file|
     @data = JSON.load(note_file)
     @data['last_id'] += 1
@@ -35,28 +36,44 @@ post '/notes' do
   redirect to('/notes')
 end
 
-get '/notes/1111' do
-  @title = 'main'
-  @content = 'main contnt'
-  erb :note_detail
+get '/notes/:id' do
+  @title = 'edit'
+  # ファイルの読み込み
+  File.open('data/notes.json') do |note_file|
+    @data = JSON.load(note_file)
+    @note = @data['notes'][params[:id]]
+  end
+  erb :notes_detail
 end
 
-delete '/notes/1111' do
+delete '/notes/:id' do
   @title = 'main'
   @content = 'main contnt'
   # リダイレクトしてメモアプリトップにいく
   redirect to('/notes')
 end
 
-get '/notes/1111/edit' do
+get '/notes/:id/edit' do
   @title = 'main'
-  @content = 'main contnt'
+  # ファイルの読み込み
+  File.open('data/notes.json') do |note_file|
+    @data = JSON.load(note_file)
+    @note = @data['notes'][params[:id]]
+  end
   erb :notes_edit
 end
 
-patch '/notes/1111/' do
+post '/notes/:id' do
   @title = 'main'
-  @content = 'main contnt'
+  File.open('data/notes.json') do |note_file|
+    @data = JSON.load(note_file)
+    @data['notes'][params[:id]][:title] = params[:note_title]
+    @data['notes'][params[:id]][:body] = params[:note_body]
+  end
+  # 書き込み
+  File.open('data/notes.json', 'w') do |note_file|
+    JSON.dump(@data, note_file)
+  end
   # リダイレクトしてshow memoにいく
-  redirect to('/notes/1111')
+  redirect to("/notes/#{params[:id]}")
 end

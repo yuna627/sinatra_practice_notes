@@ -1,0 +1,9 @@
+<form method="post" action="/notes/<%= @note["id"] %>">
+	<p>タイトル：<br>
+  <textarea name="note_title" cols="30" rows="1"><%= @note["title"] %>
+  </textarea></p>
+	<p>内容：<br>
+	<textarea name="note_body" cols="30" rows="5"><%= @note["body"] %>
+</textarea></p>
+	<input type= "submit" value="変更!">
+</form>
