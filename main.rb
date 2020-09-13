@@ -86,7 +86,7 @@ get '/notes/:id/edit' do
   erb :notes_edit
 end
 
-post '/notes/:id' do
+patch '/notes/:id' do
   @title = 'main'
   File.open('data/notes.json') do |note_file|
     @data = JSON.load(note_file)
