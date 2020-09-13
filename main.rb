@@ -7,10 +7,14 @@ logger = Logger.new('sinatra.log')
 
 get '/notes' do
   @title = 'Notes'
-  File.open('data/notes.json') do |note_file|
-    note = JSON.load(note_file)
-    p note
-    @notes = note['notes']
+  if File.exist?('data/notes.json')
+    File.open('data/notes.json') do |note_file|
+      note = JSON.load(note_file)
+      p note
+      @notes = note['notes']
+    end
+  else
+    @notes = {}
   end
 
   erb :notes
@@ -23,16 +27,23 @@ end
 
 post '/notes' do
   @title = 'main'
-  # ファイルの読み込み
-  File.open('data/notes.json') do |note_file|
-    @data = JSON.load(note_file)
-    @data['last_id'] += 1
-    @data['notes'][@data['last_id'].to_s] = {
-      id: @data['last_id'],
-      title: params[:note_title],
-      body: params[:note_body]
-    }
+  # ファイルの読み込み(データがある場合)
+  if File.exist?('data/notes.json')
+    File.open('data/notes.json') do |note_file|
+      @data = JSON.load(note_file)
+    end
+  else
+    # データファイルの新規作成
+    @data = { 'last_id' => 0, 'notes' => {} }
   end
+  # データの追加
+  @data['last_id'] += 1
+  @data['notes'][@data['last_id'].to_s] = {
+    id: @data['last_id'],
+    title: params[:note_title],
+    body: params[:note_body]
+  }
+
   # 書き込み
   File.open('data/notes.json', 'w') do |note_file|
     JSON.dump(@data, note_file)
