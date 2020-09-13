@@ -1,6 +1,9 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
+require 'logger'
+
+logger = Logger.new('sinatra.log')
 
 get '/notes' do
   @title = 'Notes'
@@ -9,6 +12,7 @@ get '/notes' do
     p note
     @notes = note['notes']
   end
+
   erb :notes
 end
 
@@ -46,9 +50,17 @@ get '/notes/:id' do
   erb :notes_detail
 end
 
-delete '/notes/:id' do
+post '/notes/:id/delete' do
   @title = 'main'
-  @content = 'main contnt'
+  File.open('data/notes.json') do |note_file|
+    @data = JSON.load(note_file)
+    deleted = @data['notes'].delete(params[:id].to_s)
+    logger.info(msg: 'Deleted', note: deleted)
+  end
+  # 書き込み
+  File.open('data/notes.json', 'w') do |note_file|
+    JSON.dump(@data, note_file)
+  end
   # リダイレクトしてメモアプリトップにいく
   redirect to('/notes')
 end
