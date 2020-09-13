@@ -1,10 +1,10 @@
 <%= @note["title"] %>
 <br>
-<%= @note["body"] %>
+<%= @note["body"].gsub(/\R/,"<br>") %>
 
 <a href="/notes/<%= @note["id"] %>/edit">変更</a>
 
 
-<form method="delete" action="/notes">
+<form method="post" action="/notes/<%= @note["id"] %>/delete">
   <input type= "submit" value="削除!">
 </form>
