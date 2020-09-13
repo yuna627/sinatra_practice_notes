@@ -61,7 +61,7 @@ get '/notes/:id' do
   erb :notes_detail
 end
 
-post '/notes/:id/delete' do
+delete '/notes/:id' do
   @title = 'main'
   File.open('data/notes.json') do |note_file|
     @data = JSON.load(note_file)

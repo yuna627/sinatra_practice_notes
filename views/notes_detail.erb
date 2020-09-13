@@ -5,6 +5,7 @@
 <a href="/notes/<%= @note["id"] %>/edit">変更</a>
 
 
-<form method="post" action="/notes/<%= @note["id"] %>/delete">
+<form method="post" action="/notes/<%= @note["id"] %>">
+  <input type = "hidden" name = "_method" value = "DELETE">
   <input type= "submit" value="削除!">
 </form>
