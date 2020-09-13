@@ -90,8 +90,8 @@ post '/notes/:id' do
   @title = 'main'
   File.open('data/notes.json') do |note_file|
     @data = JSON.load(note_file)
-    @data['notes'][params[:id]][:title] = params[:note_title]
-    @data['notes'][params[:id]][:body] = params[:note_body]
+    @data['notes'][params[:id]]['title'] = params[:note_title]
+    @data['notes'][params[:id]]['body'] = params[:note_body]
   end
   # 書き込み
   File.open('data/notes.json', 'w') do |note_file|
