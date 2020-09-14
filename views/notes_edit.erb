@@ -1,10 +1,21 @@
 <form method="post" action="/notes/<%= @note["id"] %>">
   <input type = "hidden" name = "_method" value = "PATCH">
-	<p>タイトル：<br>
-  <textarea name="note_title" cols="30" rows="1"><%= @note["title"] %>
-  </textarea></p>
-	<p>内容：<br>
-	<textarea name="note_body" cols="30" rows="5"><%= @note["body"] %>
-</textarea></p>
-	<input type= "submit" value="変更!">
+
+	<div class="row pt-3 pd-1">
+    <label for="note_title">タイトル：</label>
+  </div>
+	<div class="row form_group pt-2 pb-3">
+    <input type="text" name="note_title"  class="form-control col-md-5" id="note_title" value=<%= @note["title"] %> required>
+  </div>
+
+  <div class="row pt-3 pd-1">
+    <label for="note_body">内容：</label>
+  </div>
+	<div class="row form-group pt-1 pb-2">
+    <textarea class="form-control col-md-5" name="note_body" rows="5" id="note_body" required><%= @note["body"] %></textarea>
+  </div>
+
+  <div class="row">
+    <button type="submit" class="btn btn-primary mb-2">内容を変更する</button>
+  </div>
 </form>

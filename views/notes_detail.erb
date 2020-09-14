@@ -1,11 +1,25 @@
-<%= @note["title"] %>
-<br>
-<%= @note["body"].gsub(/\R/,"<br>") %>
+<div class="row" id="note-title">
+  <div class="container-fluid pt-3 pb-2">
+    <h2><span class="under"><%= @note["title"] %></span></h2>
+  </div>
+</div>
+  
+<div class="row" id="note-body">
+  <div class="container-fluid pt-1 pb-5">
+    <%= @note["body"].gsub(/\R/,"<br>") %>
+  </div>
+</div>
 
-<a href="/notes/<%= @note["id"] %>/edit">変更</a>
+<div class='row btn-toolbar'>
+  <div class="btn-group">
+    <div class="col-md-6">
+      <a href="/notes/<%= @note["id"] %>/edit" class="btn btn-warning mb-2" role="button">変更する</a>
+    </div>
 
-
-<form method="post" action="/notes/<%= @note["id"] %>">
-  <input type = "hidden" name = "_method" value = "DELETE">
-  <input type= "submit" value="削除!">
-</form>
+    <div class="col-md-6">
+      <form method="post" action="/notes/<%= @note["id"] %>">
+        <input type = "hidden" name = "_method" value = "DELETE">
+        <input type="submit" class="btn btn-danger" value="削除する">
+      </form>
+    </div>
+  </div>

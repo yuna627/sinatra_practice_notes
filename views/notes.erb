@@ -1,5 +1,13 @@
-<a href="/notes/new">ノートを書く</a>
+<div class="row">
+	<div class="form_group pt-2 pb-3">
+    <a href="/notes/new" class="btn btn-primary mb-2" role="button">メモを書く</a>
+  </div>
+</div>
 
-<% @notes.each do |id,note| %>
-  <li><a href="/notes/<%= id %>"><%= note['title'] %></a></li>
-<% end %>
+<div class="row">
+  <ul>
+    <% @notes.each do |id,note| %>
+      <li><a href="/notes/<%= id %>"><%= note['title'] %></a></li>
+    <% end %>
+  </ul>
+</div>

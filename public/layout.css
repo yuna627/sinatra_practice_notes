@@ -1,0 +1,20 @@
+/* command shift R */
+#app-header{
+  background-color: chocolate;
+  height: 10em;
+}
+
+#app-title{
+  font-family: 'Alegreya Sans SC';
+  color: white;
+}
+
+.under{
+  background: linear-gradient(transparent 50%, bisque 50%);
+}
+
+.btn-primary {
+  color: white;
+  background-color: chocolate;
+  border-color: bisque;
+}
