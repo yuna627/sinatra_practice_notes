@@ -18,13 +18,13 @@ end
 # データの読み込み
 # データが存在しないときは初期データを返す
 def load_data
-  data = { 'last_id' => 0, 'notes' => {} }
-  return data unless File.exist?(DATAFILE)
-
-  File.open(DATAFILE) do |note_file|
-    data = JSON.load(note_file)
+  if File.exist?(DATAFILE)
+    File.open(DATAFILE) do |note_file|
+      JSON.load(note_file)
+    end
+  else
+    { 'last_id' => 0, 'notes' => {} }
   end
-  data
 end
 
 # トップ画面
