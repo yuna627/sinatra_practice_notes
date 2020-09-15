@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
 require 'logger'
 
-LOGFILE = 'sinatra.log'.freeze
-DATAFILE = 'data/notes.json'.freeze
+LOGFILE = 'sinatra.log'
+DATAFILE = 'data/notes.json'
 
 logger = Logger.new(LOGFILE)
 
