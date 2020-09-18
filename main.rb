@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
 require 'logger'
 
-LOGFILE = 'sinatra.log'.freeze
-DATAFILE = 'data/notes.json'.freeze
+LOGFILE = 'sinatra.log'
+DATAFILE = 'data/notes.json'
 
 logger = Logger.new(LOGFILE)
 
@@ -18,13 +20,11 @@ end
 # データの読み込み
 # データが存在しないときは初期データを返す
 def load_data
-  data = { 'last_id' => 0, 'notes' => {} }
-  return data unless File.exist?(DATAFILE)
+  return { 'last_id' => 0, 'notes' => {} } unless File.exist?(DATAFILE)
 
   File.open(DATAFILE) do |note_file|
-    data = JSON.load(note_file)
+    JSON.load(note_file)
   end
-  data
 end
 
 # トップ画面
