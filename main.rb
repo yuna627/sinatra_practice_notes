@@ -2,39 +2,30 @@
 
 require 'sinatra'
 require 'sinatra/reloader'
-require 'json'
 require 'logger'
+require 'pg'
 
 LOGFILE = 'sinatra.log'
-DATAFILE = 'data/notes.json'
 
 logger = Logger.new(LOGFILE)
 
-# データの書き込み
-def write_data(data)
-  File.open(DATAFILE, 'w') do |note_file|
-    JSON.dump(data, note_file)
-  end
+# DBの読み込み
+def load_data
+  connection = PG.connect(host: 'localhost', user: 'postgres', dbname: 'sinatra_practice_notes')
+  connection.exec('SELECT * FROM notes ORDER BY updated_at DESC')
 end
 
-# データの読み込み
-# データが存在しないときは初期データを返す
-def load_data
-  if File.exist?(DATAFILE)
-    File.open(DATAFILE) do |note_file|
-      JSON.load(note_file)
-    end
-  else
-    { 'last_id' => 0, 'notes' => {} }
-  end
+def get_data(id)
+  connection = PG.connect(host: 'localhost', user: 'postgres', dbname: 'sinatra_practice_notes')
+  result = connection.exec('SELECT * FROM notes WHERE id = $1', [id])
+  result[0]
 end
 
 # トップ画面
 # ノート一覧
 get '/notes' do
   @title = 'メモ'
-  data = load_data
-  @notes = data['notes']
+  @notes = load_data
   erb :notes
 end
 
@@ -46,15 +37,11 @@ end
 
 # メモの新規投稿処理
 post '/notes' do
-  data = load_data
-  data['last_id'] += 1
-  data['notes'][data['last_id'].to_s] = {
-    id: data['last_id'],
-    title: params[:note_title],
-    body: params[:note_body]
-  }
-
-  write_data(data)
+  connection = PG.connect(host: 'localhost', user: 'postgres', dbname: 'sinatra_practice_notes')
+  connection.exec(
+    'INSERT INTO notes(id,title,body,updated_at,created_at) values(DEFAULT,$1,$2,now(),now())',
+    [params[:note_title], params[:note_body]]
+  )
 
   redirect to('/notes')
 end
@@ -62,17 +49,18 @@ end
 # メモ詳細画面
 get '/notes/:id' do
   @title = 'メモ詳細'
-  data = load_data
-  @note = data['notes'][params[:id]]
+  @note = get_data(params[:id])
+  logger.info(msg: 'note', note: @note)
+
   erb :notes_detail
 end
 
 # メモの削除処理
 delete '/notes/:id' do
-  data = load_data
-  deleted = data['notes'].delete(params[:id].to_s)
-  logger.info(msg: 'Deleted', note: deleted)
-  write_data(data)
+  connection = PG.connect(host: 'localhost', user: 'postgres', dbname: 'sinatra_practice_notes')
+  connection.exec('DELETE FROM notes WHERE id = $1', [params[:id]])
+  logger.info(msg: 'Deleted', note_id: params[:id])
+
   # リダイレクトしてメモアプリトップにいく
   redirect to('/notes')
 end
@@ -80,17 +68,19 @@ end
 # メモの編集画面
 get '/notes/:id/edit' do
   @title = 'メモ編集'
-  data = load_data
-  @note = data['notes'][params[:id]]
+  @note = get_data(params[:id])
+
   erb :notes_edit
 end
 
 # メモの編集処理
 patch '/notes/:id' do
-  data = load_data
-  data['notes'][params[:id]]['title'] = params[:note_title]
-  data['notes'][params[:id]]['body'] = params[:note_body]
-  write_data(data)
+  connection = PG.connect(host: 'localhost', user: 'postgres', dbname: 'sinatra_practice_notes')
+  connection.exec(
+    'UPDATE notes SET title = $1, body = $2, updated_at = now() WHERE id = $3',
+    [params[:note_title], params[:note_body], params[:id]]
+  )
+
   # リダイレクトしてshow memoにいく
   redirect to("/notes/#{params[:id]}")
 end

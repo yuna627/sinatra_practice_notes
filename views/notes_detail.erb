@@ -1,9 +1,9 @@
 <div class="row" id="note-title">
   <div class="container-fluid pt-3 pb-2">
-    <h2><span class="under"><%= @note["title"] %></span></h2>
+    <h2><span class="under"><%= @note['title'] %></span></h2>
   </div>
 </div>
-  
+
 <div class="row" id="note-body">
   <div class="container-fluid pt-1 pb-5">
     <%= @note["body"].gsub(/\R/,"<br>") %>
